@@ -7,7 +7,7 @@ Some functions to help create conditions and other
 things.
 
 """
-from functools import partial
+
 
 def flip(f):
     """
@@ -23,20 +23,27 @@ def flip(f):
 
     return f_flipped
 
-def iterable_of_objtype(obj_type, l):
-    if l == []:
-        return False
+def all_satisfy(fun, iterable):
+    """
+    Walks the iterable and returns false
+    if applying fun to the element is false.
+    If all return true then returns true.
 
-    for i in l:
-        if not isinstance(i, obj_type):
+    :param fun: function passed to all elements of iterable
+    :param iterable: iterable collection of elements
+    :return: true or false
+    """
+    for i in iterable:
+        if not fun(i):
             return False
+    else:
+        return True
 
-    return True
-
-# a function that when partialy applied
+# a function that when partially applied
 # makes type checkers really quickly
-instance_of = flip(isinstance)
+instance_of = flip(isinstance) # @not-tested
 
 # creates exceptions given a string name, and base class
 # exceptions for lazy people
-exception_fun = lambda name, base: type(name, (base,), {})
+exception_fun = lambda name, base: type(name, (base,), {}) # @not-tested
+

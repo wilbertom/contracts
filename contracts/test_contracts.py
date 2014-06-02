@@ -10,21 +10,8 @@ This was my first project developed using TDD thanks to @nwinklareth.
 import unittest
 from contracts import require, RequirementBreached
 from helpers import flip
-from conditions import is_int, is_string, is_float, is_num, is_list_of_ints
-
-# list of functions to test with decorator
-@require(is_string)
-def greet(name):
-    return "hello %s" % (name)
-
-@require(is_list_of_ints)
-def asum(ns):
-    return sum(ns)
-
-@require(is_int)
-def raise_to(n, power):
-    return n ** power
-
+from conditions import is_int, is_string, is_float, is_num, \
+                       not_zero, are_ints
 
 
 class TestHelpers(unittest.TestCase):
@@ -34,11 +21,11 @@ class TestHelpers(unittest.TestCase):
     must be tested.
     """
 
-
     def test_flip(self):
         def divide(x, y):
             return x / y
         self.assertEquals(divide(100, 10), flip(divide)(10, 100))
+
 
 class TestConditions(unittest.TestCase):
     """
@@ -52,7 +39,6 @@ class TestConditions(unittest.TestCase):
 
         self.assertFalse(is_string(1))
         self.assertFalse(is_string(0.0))
-
 
     def test_is_int(self):
         self.assertTrue(is_int(1))
@@ -68,7 +54,6 @@ class TestConditions(unittest.TestCase):
         self.assertFalse(is_int(0.0))
         self.assertFalse(is_int(-0.1))
 
-
     def test_is_float(self):
         self.assertFalse(is_float(1))
         self.assertFalse(is_float(-1))
@@ -80,7 +65,6 @@ class TestConditions(unittest.TestCase):
         self.assertTrue(is_float(0.0))
         self.assertTrue(is_float(1.0))
         self.assertTrue(is_float(-1.0))
-
 
     def test_is_number(self):
         self.assertTrue(is_num(0))
@@ -95,39 +79,60 @@ class TestConditions(unittest.TestCase):
         self.assertFalse(is_num('A'))
 
 
-    def test_is_list_of_ints(self):
-        self.assertTrue(is_list_of_ints([1, 2, 3, 4, 5]))
-        self.assertTrue(is_list_of_ints([1]))
-
-        self.assertFalse(is_list_of_ints([]))
-        self.assertFalse(is_list_of_ints([1.0, 2, 3, 4, 5]))
-        self.assertFalse(is_list_of_ints([1, 2, 'A', 4, 5]))
-
-
-
 class TestRequire(unittest.TestCase):
     """
     Tests for a contract's requirement
 
     """
 
-
     def test_require_return(self):
+
+        @require(is_string)
+        def greet(name):
+            return "hello %s" % name
+
         h = greet("Wil")
         self.assertEquals(h, "hello Wil")
 
         self.assertRaises(RequirementBreached, greet, 1)
 
-    def test_require_int(self):
-        # should return the value of asum if requirements met
+    def test_require_ints(self):
+
+        @require(are_ints)
+        def asum(ns):
+            return sum(ns)
+
+        # should return the value of 'asum' if requirements met
         self.assertEquals(asum([1, 2, 3, 4, 5]), 15)
         # or raise an error if not met
         self.assertRaises(RequirementBreached, asum, ['A', 'B', 'C'])
 
-
     def test_require_many_params(self):
+
+        @require(is_int, is_int)
+        def raise_to(n, power):
+            return n ** power
+
         # should be able to decorate a function
         # with multiple params
-        # self.assertEquals(raise_to(3, 3), 27)
-        # failing but i need to commit before taking a break
-        pass
+        self.assertEquals(raise_to(3, 3), 27)
+
+    def test_nullable_param(self):
+
+        @require(None, is_int)
+        def times(o, n):
+            return o * n
+
+        self.assertEquals(times('a', 3), 'aaa')
+        self.assertEquals(times(3, 3), 9)
+        self.assertRaises(RequirementBreached, times, 'a', 0.1)
+
+    def test_multiple_requirements(self):
+        @require(is_num, is_num)
+        @require(None, not_zero)
+        def divide(n, by):
+            return n / by
+
+        self.assertEquals(divide(4, 4), 1)
+        self.assertRaises(RequirementBreached, divide, 4, 0)
+        self.assertRaises(RequirementBreached, divide, '3', 3)

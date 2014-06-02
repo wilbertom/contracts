@@ -31,19 +31,23 @@ When extended to data structures Contract can be a function that limits
 the set of values a property can take.
 
 """
+
 from helpers import exception_fun
 
 ContractBreached = exception_fun('ContractBreached', Exception)
-RequirementBreached= exception_fun('RequirementError', ContractBreached)
+RequirementBreached = exception_fun('RequirementError', ContractBreached)
+EnsuranceBreached = exception_fun('EnsuranceBreached', ContractBreached)
+
 
 def term(term_handler):
-    def contract_term(conditions):
+
+    def contract_term(*conditions):
+
         def fun_with_conditions(f):
 
             def new_fun(*args):
+
                 return term_handler(conditions, f, *args)
-
-
 
             return new_fun
 
@@ -51,12 +55,12 @@ def term(term_handler):
 
     return contract_term
 
+
 @term
 def require(conditions, fun, *args):
-    if conditions(*args):
-        return fun(*args)
+    for c, a in zip(conditions, args):
+        if c is not None and not c(a):
+            raise RequirementBreached('Term %s breached by'
+                                      '%s(%s, _)' % (conditions, fun, args))
     else:
-        raise RequirementBreached('Condition %s breached by'
-                                  '%s(%s, _)' % (conditions, fun, args))
-
-
+        return fun(*args)
