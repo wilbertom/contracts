@@ -9,7 +9,7 @@ of Contract Programming. It might be exactly the same or completely
 different from it. Hopefully in the future I will be able to 
 learn Eiffel and follow it's implementation.
 
-In the mean while. In this module:
+Meanwhile, in this module:
 
 A *Contract* is a list of terms that must be satisfied.
 
@@ -33,19 +33,17 @@ values a property can take.
 git clone https://github.com/wilbertom/contracts
 cd ./contratos
 make install
-
 ```
 
 If running `make` worries you or you don't have it installed in your system,
 just run:
 
 ```
-python setup.py
-
+python setup.py install
 ```
 
-The module has *no requirements*, except running `python 3.4`. Though
-everything should work on `2.7`. It is not the targeted version though.
+The module has *no requirements*, except running `python 3.4`. Everything
+should work on `2.7`, but it is not the targeted version.
 
 ## Usage
 
@@ -61,16 +59,14 @@ def is_int(n):
 def is_string(s):
     return isinstance(s, str)
 
-@require(is_int, is_string)
+@require(is_string, is_int)
 @ensure(is_string)
 def repeat(string, n_times):
     return string * n_times
 
-print(repeat('Hello ', 3))
-'Hello Hello Hello'
+print(repeat('Hello ', 3)) # 'Hello Hello Hello'
 
-print(repeat('Hello', 's'))
-Boomsmahsunakskn error is raised
+print(repeat('Hello', 's')) # Boomsmahsunakskn error is raised
 
 ```
 
@@ -82,6 +78,7 @@ in `terms` is a `contract`.
 
 Above our `terms` are `ensure` and `require`. We `require`
 that our first parameter `is_string` and the second `is_int`.
+So our conditions are `is_string` and `is_int`.
 
 We `ensure` that the first(and only in this case) return value
 `is_string`.
@@ -98,6 +95,8 @@ know having functions that don't need to specify a type
 is most of the time good. So here is another example.
 
 ```
+from contratos.contracts import require
+
 def not_zero(n):
     return n != 0
 
@@ -109,7 +108,7 @@ def is_num(n):
 def divide(n, by):
     return n / by
 
-divide(5, 5) # 1
+print(divide(5, 5)) # 1.0
 divide(5, 0) # booomaknsakjda error
 
 ```
@@ -121,12 +120,12 @@ to having all over your source code checks for
 that can be used anywhere. Now never again will you write 
 `if n == 0: raise Excep...`.
 
-Also as a nice side effect, we get some really nice syntax that
-document our functions.
+Also as a side effect, we get some really nice syntax that
+documents our functions.
 
 A function can have more that one `ensure` and more than one
 `require`. Make sure that the return value and input parameters
-match the signature of you `conditions`.
+match the signature of your `conditions`.
 
 ## Built-in Conditions
 
@@ -170,12 +169,11 @@ To see the updated list take a look inside the `contratos/conditions.py` file.
 ## Running Tests
 
 I tried developing this project using `TDD`. I broke the practice because it was
-my first time. Still some tests still exists and all the source code will be
+my first time. Still some tests exists and all the source code will be
 tested in the future.
 
 ```
 make tests
-
 ```
 
 Or:
@@ -183,7 +181,6 @@ Or:
 ```
 python -m unittest discover contratos.test_contracts
 python -m unittest discover contratos.test_extras
-
 ```
 
 As of now it looks like it's running the tests twice. I'm
