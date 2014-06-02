@@ -34,19 +34,27 @@ exception_fun = lambda name, base: type(name, (base,), {})
 ContractBreached = exception_fun('ContractBreached', Exception)
 RequirementBreached= exception_fun('RequirementError', ContractBreached)
 
+def new_contract(contract_handler):
+    def contract(conditions):
+        def fun_with_conditions(f):
 
-def require(conditions):
-    def fun_with_conditions(f):
+            def new_fun(*args):
+                return contract_handler(conditions, f, *args)
 
-        def new_fun(*arg):
-            if conditions(*arg):
-                return f(*arg)
-            else:
-                raise RequirementBreached('Condition %s breached by'
-                                          '%s(%s, _)' % (conditions,f, arg))
 
-        return new_fun
 
-    return fun_with_conditions
+            return new_fun
 
+        return fun_with_conditions
+
+    return contract
+
+
+@new_contract
+def require(conditions, fun, *args):
+    if conditions(*args):
+        return fun(*args)
+    else:
+        raise RequirementBreached('Condition %s breached by'
+                                  '%s(%s, _)' % (conditions, fun, args))
 
