@@ -3,6 +3,7 @@ env
 *.swp
 .idea
 
+build
 __pycache__
 
 

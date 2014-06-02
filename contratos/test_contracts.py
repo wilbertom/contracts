@@ -8,9 +8,9 @@ This was my first project developed using somewhat TDD(thanks to @nwinklareth).
 """
 
 import unittest
-from contracts import require, ensure, RequirementBreached, \
+from .contracts import require, ensure, RequirementBreached, \
     ContractParamsError, EnsuranceBreached
-from conditions import is_int, is_string, is_num, \
+from .conditions import is_int, is_string, is_num, \
     not_zero, are_ints, is_positive
 
 

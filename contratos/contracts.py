@@ -32,8 +32,7 @@ the set of values a property can take.
 
 """
 
-from helpers import exception_fun
-from conditions import is_iterable
+from .helpers import exception_fun
 
 ContractError = exception_fun('ContractError', Exception)
 ContractBreached = exception_fun('ContractBreached', ContractError)

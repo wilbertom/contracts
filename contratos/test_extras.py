@@ -8,8 +8,8 @@ Testing of other stuff that helps the core.
 """
 
 import unittest
-from helpers import flip
-from conditions import is_int, is_string, is_float, is_num
+from .helpers import flip
+from .conditions import is_int, is_string, is_float, is_num
 
 
 class TestHelpers(unittest.TestCase):

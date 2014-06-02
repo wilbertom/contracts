@@ -9,7 +9,7 @@ a accompaniying test.
 
 from functools import partial
 from collections import Iterable
-from helpers import instance_of, all_satisfy
+from .helpers import instance_of, all_satisfy
 
 # type checking
 is_string = partial(instance_of, str)
@@ -33,4 +33,4 @@ is_zero = lambda n: n == 0  # @not-tested
 not_zero = lambda n: not is_zero(n)  # @not-tested
 
 # convenience sets
-are_ints = partial(all_satisfy, is_int)  # not-tested
+are_ints = partial(all_satisfy, is_int)  # @not-tested
