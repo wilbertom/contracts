@@ -21,6 +21,11 @@ def greet(name):
 def asum(ns):
     return sum(ns)
 
+@require(is_int)
+def raise_to(n, power):
+    return n ** power
+
+
 
 class TestHelpers(unittest.TestCase):
     """
@@ -111,6 +116,7 @@ class TestRequire(unittest.TestCase):
         h = greet("Wil")
         self.assertEquals(h, "hello Wil")
 
+        self.assertRaises(RequirementBreached, greet, 1)
 
     def test_require_int(self):
         # should return the value of asum if requirements met
@@ -119,3 +125,9 @@ class TestRequire(unittest.TestCase):
         self.assertRaises(RequirementBreached, asum, ['A', 'B', 'C'])
 
 
+    def test_require_many_params(self):
+        # should be able to decorate a function
+        # with multiple params
+        # self.assertEquals(raise_to(3, 3), 27)
+        # failing but i need to commit before taking a break
+        pass

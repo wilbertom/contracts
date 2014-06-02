@@ -60,4 +60,3 @@ def require(conditions, fun, *args):
                                   '%s(%s, _)' % (conditions, fun, args))
 
 
-
