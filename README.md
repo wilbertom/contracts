@@ -27,13 +27,33 @@ A *Condition* is something that evaluates to true during a contract.
 When extended to data structures, a *Contract*scan be a function that limits
 the set of values a property can take.
 
+## Installation
+
+```
+git clone https://github.com/wilbertom/contracts
+cd ./contratos
+make install
+
+```
+
+If running `make` worries you or you don't have it installed in your system,
+just run:
+
+```
+python setup.py
+
+```
+
+The module has *no requirements*, except running `python 3.4`. Though
+everything should work on `2.7`. It is not the targeted version though.
+
 ## Usage
 
 So what does this translate to? Above I'm being vague on purpose. Let's use
 this module to implement type checking in Python.
 
 ```
-from contracts import ensure, require
+from contratos.contracts import ensure, require
 
 def is_int(n):
     return isinstance(n, int)
@@ -73,7 +93,6 @@ can program.
 The second call to repeat above would raise an error
 because the second parameter didn't satisfy `is_string`.
 
-
 Type checking is just one reason to use this, but as we
 know having functions that don't need to specify a type
 is most of the time good. So here is another example.
@@ -86,13 +105,12 @@ def is_num(n):
     return isinstance(n, int) or isinstance(n, float)
 
 @require(is_num, is_num)
-@requre(None, not_zero)
+@require(None, not_zero)
 def divide(n, by):
     return n / by
 
 divide(5, 5) # 1
 divide(5, 0) # booomaknsakjda error
-
 
 ```
 
@@ -106,6 +124,70 @@ that can be used anywhere. Now never again will you write
 Also as a nice side effect, we get some really nice syntax that
 document our functions.
 
+A function can have more that one `ensure` and more than one
+`require`. Make sure that the return value and input parameters
+match the signature of you `conditions`.
+
+## Built-in Conditions
+
+Since some conditions will be so common, the module defines a
+few for convenience, *feel free to propose more*. You can create
+an issue it and tag it with the condition label.
+
+Here are some already defined. They can be found under
+`contratos.conditions`.
+
+```
+
+# type checking
+is_string = partial(instance_of, str)
+is_int = partial(instance_of, int)
+is_float = partial(instance_of, float)
+is_num = lambda n: is_int(n) or is_float(n)
+is_bool = partial(instance_of, bool)  # @not-tested
+is_tuple = partial(instance_of, tuple)  # @not-tested
+is_list = partial(instance_of, list)  # @not-tested
+is_iterable = partial(instance_of, Iterable)  # @not-tested
+
+# specific numeric sets
+is_positive = lambda n: n > 0  # @not-tested
+is_non_negative = lambda n: n >= 0  # @not-tested
+is_natural = lambda n: is_int(n) and is_positive(n)  # @not-tested
+is_natural_0 = lambda n: is_int(n) and is_non_negative(n)  # @not-tested
+is_negative = lambda n: is_num(n) and not is_non_negative(n)  # @not-tested
+is_even = lambda n: n % 2 == 0  # @not-tested
+is_odd = lambda n: not is_even(n)  # @not-tested
+is_zero = lambda n: n == 0  # @not-tested
+not_zero = lambda n: not is_zero(n)  # @not-tested
+
+# convenience sets
+are_ints
+
+```
+
+To see the updated list take a look inside the `contratos/conditions.py` file.
+
+## Running Tests
+
+I tried developing this project using `TDD`. I broke the practice because it was
+my first time. Still some tests still exists and all the source code will be
+tested in the future.
+
+```
+make tests
+
+```
+
+Or:
+
+```
+python -m unittest discover contratos.test_contracts
+python -m unittest discover contratos.test_extras
+
+```
+
+As of now it looks like it's running the tests twice. I'm
+just figuring how this stuff works.
 
 ## Directory Structure
 
