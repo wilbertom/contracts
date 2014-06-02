@@ -41,11 +41,19 @@ EnsuranceBreached = exception_fun('EnsuranceBreached', ContractBreached)
 ContractParamsError = exception_fun('ContractParamsError', ContractError)
 
 def term(term_handler):
+    """
+    Black magic.
+
+    :param term_handler: a function that has the signature
+    f(conditions, fun, *args)
+    :return: a function that can be used to decorate other functions
+    """
 
     def contract_term(*conditions):
 
         def fun_with_conditions(f):
 
+            # TODO: should be f(*args, *kwargs)
             def new_fun(*args):
 
                 return term_handler(conditions, f, *args)
@@ -87,6 +95,22 @@ def require(conditions, fun, *args):
 
 @term
 def ensure(conditions, fun, *args):
+    """
+    Ensure makes sure that the return values
+    of a function meet it's conditions.
+    Values in plural because Python's functions
+    can return lists and tuples.
+
+    For example returned[0] must satisfy conditions[0].
+    conditions[0](returned[0]) and so on.
+    Where returned is the result of fun(*args).
+
+
+    :param conditions: an iterable of condition_functions
+    :param fun: a function to watch over
+    :param args: arguments for fun
+    :return: the result of fun(*args) if it satisfies it's conditions
+    """
     ret = fun(*args)
 
     for c in conditions:
