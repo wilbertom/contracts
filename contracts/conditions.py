@@ -16,6 +16,7 @@ is_string = partial(instance_of, str)
 is_int = partial(instance_of, int)
 is_float = partial(instance_of, float)
 is_num = lambda n: is_int(n) or is_float(n)
+is_bool = partial(instance_of, bool)  # @not-tested
 is_tuple = partial(instance_of, tuple)  # @not-tested
 is_list = partial(instance_of, list)  # @not-tested
 is_iterable = partial(instance_of, Iterable)  # @not-tested

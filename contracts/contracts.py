@@ -33,6 +33,7 @@ the set of values a property can take.
 """
 
 from helpers import exception_fun
+from conditions import is_iterable
 
 ContractError = exception_fun('ContractError', Exception)
 ContractBreached = exception_fun('ContractBreached', ContractError)
@@ -84,11 +85,11 @@ def require(conditions, fun, *args):
     """
 
     if len(conditions) != len(args):
-        raise ContractParamsError('Contract is faulty. conditions and args'
+        raise ContractParamsError('Contract is faulty. conditions and args '
                                   'have different lengths.')
     for c, a in zip(conditions, args):
         if c is not None and not c(a):
-            raise RequirementBreached('Term condition: %s breached by'
+            raise RequirementBreached('Term condition: %s breached by '
                                       '%s(%s, _)' % (c, fun, args))
     else:
         return fun(*args)
@@ -115,7 +116,7 @@ def ensure(conditions, fun, *args):
 
     for c in conditions:
         if not c(ret):
-            raise EnsuranceBreached('Term ensurance: %s breached by'
+            raise EnsuranceBreached('Term ensurance: %s breached by '
                                     'return value %s' % (c, ret))
     else:
         return ret
