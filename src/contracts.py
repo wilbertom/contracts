@@ -14,14 +14,16 @@ follow it's implementation.
 
 In the mean while. In this module:
 
-A *Contract* limits a function's domain or range(input or output) to
+A *Contract* is a list of terms that must be satisfied.
+
+A *Term* limits a function's domain or range(input or output) to
 values that satisfy a list of conditions.
 
-A *Requirement* is a type of contract that limits a function's
-domain to values that satisfy a list of conditions.
+A *Requirement* is a term that limits a function's domain to
+values that satisfy a list of conditions.
 
-An *Ensurance* is a type of contract that limits another function's
-range to values that satisfy a list of conditions.
+An *Ensurance* is a term that limits another function's range to
+values that satisfy a list of conditions.
 
 A *Condition* is something that evaluates to true during a contract.
 
@@ -29,17 +31,17 @@ When extended to data structures Contract can be a function that limits
 the set of values a property can take.
 
 """
+from helpers import exception_fun
 
-exception_fun = lambda name, base: type(name, (base,), {})
 ContractBreached = exception_fun('ContractBreached', Exception)
 RequirementBreached= exception_fun('RequirementError', ContractBreached)
 
-def new_contract(contract_handler):
-    def contract(conditions):
+def term(term_handler):
+    def contract_term(conditions):
         def fun_with_conditions(f):
 
             def new_fun(*args):
-                return contract_handler(conditions, f, *args)
+                return term_handler(conditions, f, *args)
 
 
 
@@ -47,14 +49,15 @@ def new_contract(contract_handler):
 
         return fun_with_conditions
 
-    return contract
+    return contract_term
 
-
-@new_contract
+@term
 def require(conditions, fun, *args):
     if conditions(*args):
         return fun(*args)
     else:
         raise RequirementBreached('Condition %s breached by'
                                   '%s(%s, _)' % (conditions, fun, args))
+
+
 
