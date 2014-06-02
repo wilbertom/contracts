@@ -3,15 +3,15 @@ test_contracts.py
 Wilberto Morales
 wilbertomorales777@gmail.com
 
-This was my first project developed using TDD thanks to @nwinklareth.
+This was my first project developed using somewhat TDD(thanks to @nwinklareth).
 
 """
 
 import unittest
-from contracts import require, RequirementBreached
+from contracts import require, RequirementBreached, ContractParamsError
 from helpers import flip
 from conditions import is_int, is_string, is_float, is_num, \
-                       not_zero, are_ints
+    not_zero, are_ints
 
 
 class TestHelpers(unittest.TestCase):
@@ -24,6 +24,7 @@ class TestHelpers(unittest.TestCase):
     def test_flip(self):
         def divide(x, y):
             return x / y
+
         self.assertEquals(divide(100, 10), flip(divide)(10, 100))
 
 
@@ -81,12 +82,10 @@ class TestConditions(unittest.TestCase):
 
 class TestRequire(unittest.TestCase):
     """
-    Tests for a contract's requirement
-
+    Tests for a contract's requirement.
     """
 
     def test_require_return(self):
-
         @require(is_string)
         def greet(name):
             return "hello %s" % name
@@ -97,7 +96,6 @@ class TestRequire(unittest.TestCase):
         self.assertRaises(RequirementBreached, greet, 1)
 
     def test_require_ints(self):
-
         @require(are_ints)
         def asum(ns):
             return sum(ns)
@@ -108,7 +106,6 @@ class TestRequire(unittest.TestCase):
         self.assertRaises(RequirementBreached, asum, ['A', 'B', 'C'])
 
     def test_require_many_params(self):
-
         @require(is_int, is_int)
         def raise_to(n, power):
             return n ** power
@@ -118,7 +115,6 @@ class TestRequire(unittest.TestCase):
         self.assertEquals(raise_to(3, 3), 27)
 
     def test_nullable_param(self):
-
         @require(None, is_int)
         def times(o, n):
             return o * n
@@ -136,3 +132,20 @@ class TestRequire(unittest.TestCase):
         self.assertEquals(divide(4, 4), 1)
         self.assertRaises(RequirementBreached, divide, 4, 0)
         self.assertRaises(RequirementBreached, divide, '3', 3)
+
+    def test_with_too_many_args(self):
+        # TODO: decorating should trow the error instead of calling the function
+        @require(is_string, is_int, is_num, is_float)
+        def hello(name):
+            return "Hello sneaky %s" % (name)
+
+        self.assertRaises(ContractParamsError, hello, 'Wil')
+
+    def test_with_too_little_params(self):
+
+        @require()
+        def hello(name):
+            return "Hello other sneaky %s" % (name)
+
+        self.assertRaises(ContractParamsError, hello, 'Wil')
+

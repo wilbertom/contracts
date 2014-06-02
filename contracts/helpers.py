@@ -23,6 +23,7 @@ def flip(f):
 
     return f_flipped
 
+
 def all_satisfy(fun, iterable):
     """
     Walks the iterable and returns false
@@ -39,11 +40,11 @@ def all_satisfy(fun, iterable):
     else:
         return True
 
+
 # a function that when partially applied
 # makes type checkers really quickly
-instance_of = flip(isinstance) # @not-tested
+instance_of = flip(isinstance)  # @not-tested
 
 # creates exceptions given a string name, and base class
 # exceptions for lazy people
-exception_fun = lambda name, base: type(name, (base,), {}) # @not-tested
-
+exception_fun = lambda name, base: type(name, (base,), {})  # @not-tested

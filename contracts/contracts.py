@@ -34,10 +34,11 @@ the set of values a property can take.
 
 from helpers import exception_fun
 
-ContractBreached = exception_fun('ContractBreached', Exception)
-RequirementBreached = exception_fun('RequirementError', ContractBreached)
+ContractError = exception_fun('ContractError', Exception)
+ContractBreached = exception_fun('ContractBreached', ContractError)
+RequirementBreached = exception_fun('RequirementBreached', ContractBreached)
 EnsuranceBreached = exception_fun('EnsuranceBreached', ContractBreached)
-
+ContractParamsError = exception_fun('ContractParamsError', ContractError)
 
 def term(term_handler):
 
@@ -58,9 +59,39 @@ def term(term_handler):
 
 @term
 def require(conditions, fun, *args):
+    """
+    Require makes sure that all parameters
+    passed to fun are valid under a condition.
+
+    A condition can be None if you don't want an
+    argument to be bothered.
+
+    For example arg[0] must satisfy conditions[0].
+    conditions[0](arg[0]) and so on.
+
+    :param conditions: an iterable of condition_functions
+    :param fun: a function
+    :param args: arguments for fun
+    :return: fun(*args) if all pass their condition
+    """
+
+    if len(conditions) != len(args):
+        raise ContractParamsError('Contract is faulty. conditions and args'
+                                  'have different lengths.')
     for c, a in zip(conditions, args):
         if c is not None and not c(a):
-            raise RequirementBreached('Term %s breached by'
-                                      '%s(%s, _)' % (conditions, fun, args))
+            raise RequirementBreached('Term condition: %s breached by'
+                                      '%s(%s, _)' % (c, fun, args))
     else:
         return fun(*args)
+
+@term
+def ensure(conditions, fun, *args):
+    ret = fun(*args)
+
+    for c in conditions:
+        if not c(ret):
+            raise EnsuranceBreached('Term ensurance: %s breached by'
+                                    'return value %s' % (c, ret))
+    else:
+        return ret
