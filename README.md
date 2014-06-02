@@ -4,7 +4,7 @@ This module defines some helpful functions for performing
 Contract Programming in Python. I know that Contract Programming
 was first used in the Eiffel programming language. This module
 will not follow everything on it(because I have never programmed
-in Eiffel or read). Instead this module is my take and implementation 
+in Eiffel or read Eiffel). Instead this module is my take and implementation
 of Contract Programming. It might be exactly the same or completely 
 different from it. Hopefully in the future I will be able to 
 learn Eiffel and follow it's implementation.
@@ -19,13 +19,13 @@ values that satisfy a list of conditions.
 A *Requirement* is a term that limits a function's domain to
 values that satisfy a list of conditions.
 
-An *Ensurance* is a term that limits another function's range to
+An *Ensurance* is a term that limits a function's range to
 values that satisfy a list of conditions.
 
 A *Condition* is something that evaluates to true during a contract.
 
-When extended to data structures, a *Contract*scan be a function that limits
-the set of values a property can take.
+When extended to data structures, a *Contract* can limit the set of
+values a property can take.
 
 ## Installation
 
