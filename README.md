@@ -1,4 +1,4 @@
-#Contracts - Python design by contract.
+# Contractos - Python contract programming
 
 This module defines some helpful functions for performing
 Contract Programming in Python. I know that Contract Programming
