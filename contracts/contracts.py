@@ -41,6 +41,7 @@ RequirementBreached = exception_fun('RequirementBreached', ContractBreached)
 EnsuranceBreached = exception_fun('EnsuranceBreached', ContractBreached)
 ContractParamsError = exception_fun('ContractParamsError', ContractError)
 
+
 def term(term_handler):
     """
     Black magic.
@@ -93,6 +94,7 @@ def require(conditions, fun, *args):
                                       '%s(%s, _)' % (c, fun, args))
     else:
         return fun(*args)
+
 
 @term
 def ensure(conditions, fun, *args):

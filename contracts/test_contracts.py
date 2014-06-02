@@ -51,7 +51,7 @@ def divide(n, by):
 # TODO: decorating should trow the error instead of calling the function
 @require(is_string, is_int, is_num)
 def hello(name):
-    return "Hello sneaky %s" % (name)
+    return "Hello sneaky %s" % name
 
 
 class TestContracts(unittest.TestCase):
@@ -93,10 +93,12 @@ class TestContracts(unittest.TestCase):
     def test_with_too_many_args(self):
 
         self.assertRaises(ContractParamsError, hello, 'Wil')
+        # TODO: do with ensurance
 
     def test_with_too_little_params(self):
 
         self.assertRaises(ContractParamsError, hello, 'Wil')
+        # TODO: do with ensurance
 
     def test_breaking_first_ensurance(self):
 
